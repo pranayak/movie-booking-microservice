@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: azure-vote-back
+  name: spring-cloud-config-server
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
       containers:
-      - name: spring-cloud-config-server
+      - name: springcc
         image: redis
         ports:
         - containerPort: 8888
