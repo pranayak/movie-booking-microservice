@@ -41,6 +41,7 @@ pipeline {
 				steps{
 						sh '''
                         #Docker Repo Config
+			az login --service-principal -u prakash.b.nayak@gmail.com -p Vivaan@123
 			az aks get-credentials -g AZ-FS-Movie-RG -n AZ-FS-Movie-KS --admin	
 			kubectl apply -f  spring-cloud-config-server/aks.yaml
 						#If credentials are required for pulling docker image, supply the credentials to AKS by running the following:
