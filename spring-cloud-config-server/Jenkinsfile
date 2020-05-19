@@ -28,6 +28,7 @@ pipeline {
 						ACR_PASSWORD="SvwJ=aZh6dzQIk1nyY8ponTDvJQBbt0n"
 						IMAGE_NAME="$ACR_LOGINSERVER/$REPO_NAME:spring-cloud-config${BUILD_NUMBER}"
 						#Docker build and push to Azure Container Registry						
+						cd ./spring-cloud-config-server
 						docker build -t $IMAGE_NAME .
 						cd ..
 						
