@@ -16,12 +16,12 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: springcc
-        image: fstmb.azurecr.io/azure-fs-movie:springcc9
+        image: fstmb.azurecr.io/azure-fs-movie:springcc11
         ports:
         - containerPort: 8888
           name: springcc
       imagePullSecrets:
-      - name: guidesecret
+      - name: fssecret
 ---
 apiVersion: v1
 kind: Service
