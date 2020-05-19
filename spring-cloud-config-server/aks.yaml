@@ -16,7 +16,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: springcc
-        image: azure-fs-movie/springcc
+        image: fstmb.azurecr.io/azure-fs-movie:springcc9
         ports:
         - containerPort: 8888
           name: springcc
