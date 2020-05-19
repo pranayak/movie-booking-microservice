@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spring-cloud-config-server
+      app: springcc
   template:
     metadata:
       labels:
-        app: spring-cloud-config-server
+        app: springcc
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": linux
@@ -19,14 +19,14 @@ spec:
         image: redis
         ports:
         - containerPort: 8888
-          name: spring-cloud-config-server
+          name: springcc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-cloud-config-server
+  name: springcc
 spec:
   ports:
   - port: 8888
   selector:
-    app: spring-cloud-config-server
+    app: springcc
