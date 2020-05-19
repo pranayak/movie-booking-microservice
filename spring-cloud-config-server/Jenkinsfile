@@ -6,7 +6,7 @@ pipeline {
 			
 			stage ('spring-cloud-config-server - Checkout') {
 				steps {
-						checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/pranayak/movie-booking-microservices.git']]])
+						checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [],  credentialsId: '2f2d230a-af14-49bc-a44a-ff3ff840b865', submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/pranayak/movie-booking-microservices.git']]])
 				}
 			}
 			stage ('Build & Unit Test') {
