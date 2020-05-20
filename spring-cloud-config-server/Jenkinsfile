@@ -45,6 +45,7 @@ pipeline {
 			az account set -s 373ec9d3-cd43-47d3-9816-7471a1d990d9
 			 az aks get-credentials -g AZ-FS-Movie-RG -n AZ-FS-Movie-KS --admin  --file kubeconfig
 			 pwd
+			 cd ./spring-cloud-config-server
 			kubectl apply -f  aks.yaml
 						#If credentials are required for pulling docker image, supply the credentials to AKS by running the following:
 						#kubectl create secret -n $NAME docker-registry regcred --docker-server=$ACR_LOGINSERVER --docker-username=$ACR_ID --docker-password=$ACR_PASSWORD --docker-email=myemail@contoso.com
