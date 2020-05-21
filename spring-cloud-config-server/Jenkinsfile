@@ -16,8 +16,22 @@ pipeline {
 						mvn clean package -f spring-cloud-config-server/pom.xml
 						'''
 				}
-		}
-			stage ('Docker Build and Push to ACR'){
+			}
+			 stage('SonarQube analysis') { 
+				withSonarQubeEnv('Sonar') { 
+				  sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar ' + 
+				  '-f spring-cloud-config-server/pom.xml ' +
+				  '-Dsonar.projectKey=spring-cloud-config-server ' +
+				  '-Dsonar.login=admin ' +
+				  '-Dsonar.password=admin ' +
+				  '-Dsonar.language=java ' +
+				  '-Dsonar.sources=. ' +
+				  '-Dsonar.tests=. ' +
+				  '-Dsonar.test.inclusions=**/*Test*/** ' +
+				  '-Dsonar.exclusions=**/*Test*/**'
+				}
+			    }
+			 stage ('Docker Build and Push to ACR'){
 				steps{
 						
 						sh '''
