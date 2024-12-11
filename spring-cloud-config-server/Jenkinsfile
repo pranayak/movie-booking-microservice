@@ -1,0 +1,74 @@
+pipeline {
+		
+		agent any
+		
+		stages {
+			
+			stage ('spring-cloud-config-server - Checkout') {
+				steps {
+						checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [],  submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/pranayak/movie-booking-microservices.git', credentialsId: '2f2d230a-af14-49bc-a44a-ff3ff840b865']]])
+				}
+			}
+			stage ('Build & Unit Test') {
+				steps{
+						//exectute build, linter, and test runner here    
+						sh '''
+						mvn clean package -f spring-cloud-config-server/pom.xml
+						'''
+				}
+			}
+			 stage('SonarQube analysis') { 
+				steps{ 
+				  sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.3.0.603:sonar ' + 
+				  '-f spring-cloud-config-server/pom.xml ' +
+				  '-Dsonar.projectKey=spring-cloud-config-server ' +
+				  '-Dsonar.login=admin ' +
+				  '-Dsonar.password=admin ' +
+				  '-Dsonar.language=java ' +
+				  '-Dsonar.sources=. ' +
+				  '-Dsonar.tests=. ' +
+				  '-Dsonar.test.inclusions=**/*Test*/** ' +
+				  '-Dsonar.exclusions=**/*Test*/**'
+				}
+			    }
+			 stage ('Docker Build and Push to ACR'){
+				steps{
+						
+						sh '''
+						#Azure Container Registry config
+						REPO_NAME="azure-fs-movie"
+						ACR_LOGINSERVER="fstmb.azurecr.io"
+						ACR_ID="fstmb"
+						ACR_PASSWORD="SvwJ=aZh6dzQIk1nyY8ponTDvJQBbt0n"
+						IMAGE_NAME="$ACR_LOGINSERVER/$REPO_NAME:spring-cloud-config${BUILD_NUMBER}"
+						#Docker build and push to Azure Container Registry						
+						cd ./spring-cloud-config-server
+						docker build -t $IMAGE_NAME .
+						cd ..
+						
+						docker login $ACR_LOGINSERVER -u $ACR_ID -p $ACR_PASSWORD
+						docker push $IMAGE_NAME
+						'''
+				}
+		}
+			stage ('Helm Deploy to K8s'){
+				steps{
+						sh '''
+                        #Docker Repo Config
+			az login --service-principal -u 88b58003-fe75-466c-9cf7-87e67c914c5f -p GfoOW_S3Z5AL2z1i51~~Jy.sNg1y_4IRxG --tenant 5812cb88-82bc-4511-95ee-d83f571984d5
+			az account set -s 373ec9d3-cd43-47d3-9816-7471a1d990d9
+			az aks get-credentials -g AZ-FS-Movie-RG -n AZ-FS-Movie-KS --admin  --file kubeconfig
+			kubectl --kubeconfig=kubeconfig apply -f  spring-cloud-config-server/aks.yaml
+						#If credentials are required for pulling docker image, supply the credentials to AKS by running the following:
+						#kubectl create secret -n $NAME docker-registry regcred --docker-server=$ACR_LOGINSERVER --docker-username=$ACR_ID --docker-password=$ACR_PASSWORD --docker-email=myemail@contoso.com
+						'''
+					}
+			}	
+		}
+
+		post { 
+			always { 
+				echo 'Build Steps Completed'
+			}
+		}
+	}
